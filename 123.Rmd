@@ -1,0 +1,137 @@
+---
+title: "新型冠状病毒肺炎疫情控制策略研究: 效率评估及建议"
+author: "cui219"
+date: "2020/3/30"
+output:
+  html_document:
+    toc: yes
+---
+
+## 1.疫情控制:拐点、流行时间跨度、最终规模及复工风险评估
+### 1.1受控状态及拐点
+&emsp;&emsp;1.基本再生数（Basic Reproduction Number, $R_0$）：没有干预的情况下，在一个是全部是易感人的环境中，平均一个患者能够传染的人数。  
+&emsp;&emsp;2.有效再生数（Effective Reproduction Number, $Reff$）：$t$ 时刻开始出现症状的一个患者平均能够传染的人数，一般以天为单位。（2020年2月5日， $Reff=0.91<1$）  
+&emsp;&emsp;3.确诊灰度（grey degree of diagnosis, $GDD$）：实际报道的患 者总数与本文模型给出的须报道的患者总数 $R(t)$ 的比值。（2020年2月5日，$R(t)=0.0$）  
+&emsp;&emsp;4.拐点：病例曲线继续上升，病例增长速度降低。（2020年2月7日理论拐点出现）
+
+### 1.2流行时间跨度、最终规模及复工风险评估
+&emsp;&emsp;1.图1（左上）： $vEff$、$sEff$ 和 $iEff$ 分别表示疫苗的效率、对易染源和对传染源的控制效率。 而
+$ctrEff$ 则是这些效率的综合结果；红线：有效再生数的上界估计；灰线：确诊灰度。  
+&emsp;&emsp;2.图 1（右上）： $E$、$I$、$δR$ 和 $Iso$ 分别表示当时处于潜伏态、感染态、恢复态和隔离态的患者数。  
+&emsp;&emsp;3.图 1（下）： $F$、$G$ 和 $R$ 分别表示从疫情起点到某个时间 $t$ 的处于潜伏态、感染态和恢复态的个
+体总数。蓝线是模型给出的确诊患者理论值 (总数)，黑线是实际公布的确诊患者总数。 希腊字母表示
+流行病学上重要的参数 (平均潜伏期、平均传染期及它们的 95% 和 99% 的置信区间值， 基本再生数
+$R_0$, 非典型患者占比 $θ$ ) 以及相关的其他模型参数。此外，Seed Size 是零号患者的数目，End Size 是到
+疫情结束的最终规模。
+
+<center>![1.png](https://i.loli.net/2020/04/01/zjlGkAoPK1diCah.png)
+![2.png](https://i.loli.net/2020/04/01/WhvQ753l8xJa96L.png)
+![3.png](https://i.loli.net/2020/04/01/G5j3CeBzsItRl6D.png)</center>
+
+## 2卷积积分模型
+
+### 2.1卷积积分的定义
+
+&emsp;&emsp;设有两个函数$f_1(t)$和$f_2(t)$,积分
+
+<center>$f(t)=\int_{-\infty}^{\infty}{f_1(\tau)f_2(t-\tau)}{d\tau}$</center>
+
+称为$f_1(t)$和$f_2(t)$的卷积积分，简称积分，记作
+
+<center>$f(t)=f_1(t)*f_2(t)$或$f(t)={f_1(t)}\bigotimes{f_2(t)}$</center>
+
+其中$t$是指观察响应的时刻，是积分的参变量；$\tau$是指信号作用的时刻，是积分变量.
+
+利用卷积分可以求解系统的零状态响应.
+
+### 2.2完全转移模式: 卷积积分模型
+
+&emsp;&emsp;考虑群体中的个体状态转移,即一个个体要历经两种紧接相续的状态,先状态*X*后状态*Y*,且从状态*X* 到状态*Y*的转移是完全的.也就是说,群体中的个体只要进入状态*X*,那么它必然在以后的某个时间点进入到状态*Y*.
+
+### 2.3 一般概率转移模式
+
+&emsp;&emsp;为描述转移过程*X*→*Y*,令$X(t)$(相应地,$Y(t)$)是群体中的个体处于状态*X*(相应地,状态*Y*)从开始点$t_0= 0$直至某个时间点$t>0$的累积总数.显然,
+
+<center>*X*和*Y*均为递增函数.</center>
+
+&emsp;&emsp;**转移概率**&emsp;假定一个恰在时间点 s 进入状态*X*的个体,在后来的时间点${t}\geq{s}$正好进入状态*Y*的概率是$P(t − s)$, 或等价地, 此个体在后来的时间点*t*仍然处于状态*X*的概率是$1 − P(t − s)$.进一步假设这个转移过程*X*→*Y*是齐性, 而且服从于一个累积分布函数 (cumulative distribution function,CDF) *P*:$\mathbb{R}_+{\to}[0, 1]$, 其满足
+
+<center>$P(0)=0$,$\displaystyle \lim_{t\to \infty}P(t)=1$,$\mu:=\int_{0}^{\infty}{(1-P(t))}{dt}<\infty$</center>
+
+其中$\mu=\int_{0}^{\infty}{(1-P(t))}{dt}$为$X\to Y$的平均转移时间,并将这个转移过程记作$X \displaystyle \to^{P}{Y}$.一般地,$\mu$叫作*P*的期望值.显然, 函数 *X*与*Y*可以通过转移概率建立联系, 下面导出二者的关系.
+
+&emsp;&emsp;**函数*X*与*Y*的关系**&emsp;对给定t > 0, 将区间[0, t]分成n+1个等距的子区间
+
+<center>$\lbrace {\Delta_i:}={[t_i,t_{i+1}]:{0 \leq i\leq n}}\rbrace$,$t_i:=i\Delta t$,$\Delta t=\frac{t}{n-1}$</center>
+
+考虑$\Delta_i=[t_i,t_{i+1}]$.显然有下面的等式:
+
+<center>$X(t_{i+1})-X(t_i)=在\Delta_i时段里进入X 态的个体总数$.</center>
+
+因此，
+
+<center>$(X(t_{i+1})-X(t_i))\times P(t-t_i) \approx上述处于 X 态的成员将在未来的时间点 t 进入 Y 态的个体数$.</center>
+
+另外，那些在起始点0就处于*X*态的成员(数量为$X(0)$), 在经历了*t*单位时间后将进入*Y*态的部分, 数量值是 $X(0)P(t)$. 故有
+
+<center>$Y(t)\approx X(0)P(t)+\displaystyle \sum_i(X(t_{i+1})-X(t_i))\times P(t-t_i)$</center>
+
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;$\approx X(0)P(t)+\displaystyle \sum_iX^{'}(t_i)\Delta t\times P(t-t_i)$
+
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;$=X(0)P(t)+\int_0^tX^{'}(s)P(t-s){ds}$,$当\Delta t\to 0时$.
+
+因此，
+
+<center>$Y(t)=X(0)P(t)+\int_0^tP(t-s)X^{'}(s){ds}$.</center>
+
+通过分部积分并注意到$P(0)=0$，上式可等价地写成
+
+<center>$Y(t)=\int_0^tP^{'}(t-s)X(s){ds}$.</center>
+
+### 2.4一般时间相关的概率转移
+
+&emsp;&emsp;一般地, 若转移概率*P*是时间相关的, 则相应的卷积模型具有如下表达:
+
+<center>$Y(t)=X(0)P(0,t)+\int_0^tX^{'}(s)P(s,t-s){ds}$   $(t\geq 0)$</center>  
+
+## **3.　SEIR模型**
+　　考虑某种传染性疾病在人群中的传播, 在任何时刻, 每一个体都处于如下 4 种状态之一:  
+　　(1)易感态(susceptible, S), 即个体处于病源的传染范围内, 是高危人群;  
+　　(2)潜伏态(exposed, E), 即个体已被病源感染, 但还没有发病;  
+　　(3)传染态(infectious, I), 即个体已经发病, 具传染性, 症状可能因个体而异;  
+　　(4)移除态(recovered/removed, R; 或称为康净态),即个体或康复, 或因被隔离或死亡等原因而
+处于一种无传染性的净置状态.如果是康复, 康复者未必能获得对该病毒的完全免疫力, 所以, 这些个
+体可能再次处于病源的辐射范围内, 即 R → S.  
+令F(t)、G(t)、R(t)分别是在时间段[0,t]里已处于潜伏态、传染态和康净态的个体累积总数,则  
+<div align=center>  
+$$E(t):=F(t)-G(t),     I(t):=G(t)-R(t)\tag{3.1}$$
+</div>  
+是在时间点 t 时处于潜伏态和传染态的个体数, 其相应的初始条件是  
+<div align=center>  
+$$F(0) \geq 0,  G(0)=0, R(0)=0\tag{3.2}$$  
+</div>  
+　　根据我们先前的工作，可建立关于不同状态转移S → E →I → R 关系:   
+<div align=center>   
+$$F'(t)=r(t) \cdot (G(t)-R(t))   　　　 (S → E),\tag{3.3}$$ $$G(t)=\int^{t}_{0}{F(t-s)W'(s)ds}    　　　(E → I),\tag{3.4}$$
+$$R(t)=\int^{t}_{0}{G'(s)A(s,t-s)ds}　　(I → R),\tag{3.5}$$  
+</div>  
+这里用到了上一节所给的积分模型方程, 其中(3.4)和(3.5)刻画 E → I 和 I → R 这两个转移过
+程, 而方程 (3.3) 描述转移过程 S → E, 另外,  
+　　(1)r(t)是非负的有界函数, 它表示在 t 时刻, 单位时间里每个传染者所具有的平均传染率(mean
+infection rate per unit time per active infective), 称为即时平均传染率.一般地, r(t) 的值依赖于控制效率.  
+　　(2)W(t) 是一个潜伏患者在被感染 t 单位时间后成为传染者的概率.故W是非减函数, W(0) = 0,且当t → $\infty$ 时，W(t) → 1.  
+　　(3)A(t,s)是一个恰好在时刻 t 成为传染者的个体,在经过 s 单位时间后进入恢复态的概率.故对于任意固定的 t，A(t, s) 是 s 的非减函数,且当s → $\infty$ 时,A(t, s) → 1.一般地, A(t, s) 的值依赖于控制效率.  
+　　下面给出传染病动力学模型最基本量, 即有效再生数的计算式:  
+<div align=center>  
+$$R_{eff}(t):= \int^{\infty}_{0}{r(t+s)(1-A(t,s))ds}　　(t \geq 0),\tag{3.6}$$  
+</div>  
+它代表在疾病传播过程中, 在时间 t 的一个染病患者在其病程内平均传染的患者数, 它是一个随时间
+变化的量, 也是病毒传播是否能够维持的指标.  
+$$G(t)=F(0)W(t)+\int^{t}_{0}{F'(s)W(t-s)ds}$$
+$$G(t)=\int^{t}_{0}{W(t-s)d(F(s)}$$
+$$G(t)=-\int^{t}_{0}{F(s)W'(t-s)(-1)d(s)}$$ 
+令u=t-s,则  
+$$G(t)=\int^{0}_{t}{F(t-u)W'(u)d(t-u)}$$
+$$G(t)=\int^{t}_{0}{F(t-u)W'(u)d(u)}$$
+$$G(t)=\int^{t}_{0}{F(t-s)W'(s)ds} 　　(E → I)$$
+
