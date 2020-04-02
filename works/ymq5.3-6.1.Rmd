@@ -1,0 +1,128 @@
+---
+title: "实施疾控下r和A的表达和控制效率函数$u_S$和$u_I$的构造"
+author: "ymq-ymq"
+date: "2020/3/31"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+###  实施疾控下$r$和$A$的表达
+&#160; &#160; &#160; &#160;这部分的基本任务是将控制变量$(u_S,u_I)$镶入到$r$和$A$的构造里，简化变型，进行实施疾控下的$r$和$A$的表达。  
+
+&#160; &#160; &#160; &#160;对于建模，首先需要回顾如下4个基本的流行病学上的参数： 
+$$
+\begin{align}
+β&=内在的每单位时间每个活跃的传染者的平均传染率\\  
+τ&=平均潜伏期\\  
+σ&=平均传染期\\  
+θ&=非典型患者的占比.  
+\end{align}
+$$
+&#160; &#160; &#160; &#160;由此可知，基本再生数为$R_0=β*σ$，  
+$$
+\begin{align}
+τ=&\int_0^{\infty}(1-W(t)) d t\\  
+σ=&\int_0^{\infty}(1-A(0,t)) d t
+\end{align}
+$$
+&#160; &#160; &#160; &#160;关于控制变量$(u_S,u_I)$的意义，定义如下：
+$$
+\begin{align}
+1-u_S(t,R(t))&=\frac{受控的易感染者在t时的感染率}{无受控状态下的易感染者的感染率}\\  
+1-u_I(t,R(t))&=\frac{受控的传染者在t时的传染率}{无受控状态下的传染者的传染率} 
+\end{align}
+$$
+&#160; &#160; &#160; &#160;简要地，这两个控制变量的意义是 
+$$
+\begin{align}
+u_S(t,R(t)):减低感染率\\     
+u_I(t,R(t)):减低传染率
+\end{align}
+$$
+&#160; &#160; &#160; &#160;$u_S$和$u_I$在这里都写成了依赖于康净者$R(t)$的函数，是为了描述“基于报告的患者总数提升疾控力度”这种疾控响应模式。假定函数$u_S$和$u_I$均是$Lebesgue$可测的。$Lebesgue$可测的一个定义是内外逼近，即内测度等于外测度，内测度是指包含在$B$中的所有闭集之测度的上确界，外侧度是包含$B$的所有开集之测度的下确界。这里的$B$是开集，是指集合$B$中任意一点都能取到一个邻域包含于$B$中。 
+
+&#160; &#160; &#160; &#160;在以上框架下，我们相应地将$r$和$A$写成$u=(u_S,u_I)$的泛函，有  
+$$
+\begin{align}
+r(u_S)(t)&=β(1-u_S(t,R(t)))\\   
+A(u_I)(t,s)&=θA_a(u_I)(t,s)+(1-θ)A_b(u_I)(t,s)   
+\end{align}
+$$
+其中，
+$$
+\begin{align}
+A_a(u_I)(t,s)&=1-(1-ϱu_I(t,R(t)))(1-A^a(s))\\ 
+A_b(u_I)(t,s)&=1-(1-u_I(t,R(t)))(1-A^b(s))  
+\end{align}
+$$
+这里的常数$ϱ \in (0,1)$，反映了控制效率在“非典型传染者” 上的减弱。
+$A^a$是子群“非典型传染者”的内在的康净概率函数，$A^b$是“典型传染者”的内在的康净概率函数，
+$$
+\begin{align}
+σ_a&=\int_0^{\infty}(1-A^a(t)) d t\\
+σ_b&=\int_0^{\infty}(1-A^b(t)) d t
+\end{align}
+$$
+一般地，$σ_a\geqσ_b$，$θσ_a+(1-θ)σ_b=σ$，且有
+$$
+\begin{align}
+A_1(u_I)(t,s)=1-A(u_I)(t,s)=Y(s)-u_I(t,R(t))Z(s)
+\end{align}
+$$
+其中，
+$$
+\begin{align}
+Y(s)&=θ(1-A^a(s))+(1-θ)(1-A^b(s))\\
+Z(s)&=ϱθ(1-A^a(s))+(1-θ)(1-A^b(s))
+\end{align}
+$$
+函数$Y$和$Z$均是非增的，$Z\leq Y$且有
+$$
+\begin{align}
+\int_0^{\infty}Y(t)d t&=σ\\
+\int_0^{\infty}Z(t)d t&=σ-(1-ϱ)θσ_a\\
+\displaystyle\lim_{s\rightarrow\infty}Y(s)&=0=\displaystyle\lim_{s\rightarrow\infty}Z(s)
+\end{align}
+$$
+
+## 程序EpiSIX的架构及数值拟合方法
+&#160; &#160; &#160; &#160;为了实现数值化， 我们将模型转化成积分模型： 
+$$
+\begin{align}
+F(t)&=F(0)+\int_0^{t}r(u_S)(s)\cdot(G(s)-R(s)) d s,(S \rightarrow E)\\  
+G(t)&=\int_0^{t}F(t-s)W'(s) d s,(E\rightarrow I)\\  
+R(t)&=\int_0^{t}G'(s)A(u_I)(s,t-s) d s,(I\rightarrow R)
+\end{align}
+$$
+
+### 控制效率函数$u_S$和$u_I$的构造
+
+&#160; &#160; &#160; &#160;这里只涉及“基于报道的患者总数提升疾控力度”这种疾控响应模式。对于一般形式下控制效率函数的构造，在控制没有受到干扰的情况下，取  
+$$
+\begin{align}
+u(t)=min\lbrace q,1-exp(-(\frac{R(t)}{m})^p)\rbrace,(t\geq0)  
+\end{align}
+$$
+其中$q\in [0,1]$，$p$和$m$均为常数，$q$可以用来测量疾控方可能到达的最高疾控力度。$R(t)$ 是从疫情开始$t = 0$ 至某个时间点$t $恢复者的总数， 它与报道的患者总数构成一种同增关系。这里$u(t)$相当于“类$Weibull$分布”。  
+
+&#160; &#160; &#160; &#160;这里可以看一下$Weibull$分布，
+$$f(x;\lambda,k)=\begin{cases}
+\frac{k}{\lambda}(\frac{x}{\lambda})^ {(k-1)} exp(-(\frac{x}{\lambda})^k)  , & x \geq 0\\
+0, & x<0
+\end{cases}$$
+其中，$x$是随机变量，$\lambda>0$是比例参数，$k>0$是形状参数。当$k=1$时是指数分布。  
+
+&#160; &#160; &#160; &#160;在出现控制受到干扰的情况下， 假设在某个时间点$t_1>0$之后，有两个时间子集$\Delta_1$和$\Delta_2$，$\Delta_1\cup\Delta_2=[t_1,\infty)$，使得当$t \in \Delta_1$时， 无扰下的控制效率$u(t)$有一个减弱，度为$1-a \in [0, 1]$；而在当$t \in \Delta_2$时， 无扰下的控制效率$u(t)$ 可能也有一个减弱，度为$1-b \in [0, 1]$。 最后，令  
+
+$$\widetilde{u}(t)=\begin{cases}
+u(t), & t < t_1\\
+a\times u(t), & t \in \Delta_1\\
+b\times u(t), & t \in \Delta_2
+\end{cases}$$
+
+&#160; &#160; &#160; &#160;通过适当选取子集$\Delta_1$和$\Delta_2$以及参数$a, b\in [0, 1]$来模拟2020年2月10日复工潮可能带来的对疫情的影响。
+
+

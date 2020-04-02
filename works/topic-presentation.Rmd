@@ -1,0 +1,351 @@
+---
+title: "新型冠状病毒肺炎疫情控制策略研究: 效率评估及建议"
+author: "victor"
+date: "2020/3/30"
+output:
+  html_document:
+    toc: yes
+---
+
+## 1.疫情控制:拐点、流行时间跨度、最终规模及复工风险评估
+### 1.1 受控状态及拐点
+&emsp;&emsp;1.基本再生数（Basic Reproduction Number, $R_0$）：没有干预的情况下，在一个是全部是易感人的环境中，平均一个患者能够传染的人数。  
+&emsp;&emsp;2.有效再生数（Effective Reproduction Number, $Reff$）：$t$ 时刻开始出现症状的一个患者平均能够传染的人数，一般以天为单位。（2020年2月5日， $Reff=0.91<1$）  
+&emsp;&emsp;3.确诊灰度（grey degree of diagnosis, $GDD$）：实际报道的患 者总数与本文模型给出的须报道的患者总数 $R(t)$ 的比值。（2020年2月5日，$GDD=0.0$）  
+&emsp;&emsp;4.拐点：病例曲线继续上升，病例增长速度降低。（2020年2月7日理论拐点出现）
+
+### 1.2 流行时间跨度、最终规模及复工风险评估
+&emsp;&emsp;1.图1（左上）： $vEff$、$sEff$ 和 $iEff$ 分别表示疫苗的效率、对易染源和对传染源的控制效率。 而
+$ctrEff$ 则是这些效率的综合结果；红线：有效再生数的上界估计；灰线：确诊灰度。  
+&emsp;&emsp;2.图 1（右上）： $E$、$I$、$δR$ 和 $Iso$ 分别表示当时处于潜伏态、感染态、恢复态和隔离态的患者数。  
+&emsp;&emsp;3.图 1（下）： $F$、$G$ 和 $R$ 分别表示从疫情起点到某个时间 $t$ 的处于潜伏态、感染态和恢复态的个
+体总数。蓝线是模型给出的确诊患者理论值 (总数)，黑线是实际公布的确诊患者总数。 希腊字母表示
+流行病学上重要的参数 (平均潜伏期、平均传染期及它们的 95% 和 99% 的置信区间值， 基本再生数
+$R_0$, 非典型患者占比 $θ$ ) 以及相关的其他模型参数。此外，Seed Size 是零号患者的数目，End Size 是到
+疫情结束的最终规模。
+
+<center>![1.png](https://i.loli.net/2020/04/01/zjlGkAoPK1diCah.png)
+![2.png](https://i.loli.net/2020/04/01/WhvQ753l8xJa96L.png)
+![3.png](https://i.loli.net/2020/04/01/G5j3CeBzsItRl6D.png)</center>
+
+## 2.卷积积分模型
+
+### 2.1 卷积积分的定义
+
+&emsp;&emsp;设有两个函数$f_1(t)$和$f_2(t)$,积分
+
+<center>$f(t)=\int_{-\infty}^{\infty}{f_1(\tau)f_2(t-\tau)}{d\tau}$</center>
+
+称为$f_1(t)$和$f_2(t)$的卷积积分，简称积分，记作
+
+<center>$f(t)=f_1(t)*f_2(t)$或$f(t)={f_1(t)}\bigotimes{f_2(t)}$</center>
+
+其中$t$是指观察响应的时刻，是积分的参变量；$\tau$是指信号作用的时刻，是积分变量.
+
+利用卷积分可以求解系统的零状态响应.
+
+### 2.2 完全转移模式: 卷积积分模型
+
+&emsp;&emsp;考虑群体中的个体状态转移,即一个个体要历经两种紧接相续的状态,先状态*X*后状态*Y*,且从状态*X* 到状态*Y*的转移是完全的.也就是说,群体中的个体只要进入状态*X*,那么它必然在以后的某个时间点进入到状态*Y*.
+
+### 2.3 一般概率转移模式
+
+&emsp;&emsp;为描述转移过程*X*→*Y*,令$X(t)$(相应地,$Y(t)$)是群体中的个体处于状态*X*(相应地,状态*Y*)从开始点$t_0= 0$直至某个时间点$t>0$的累积总数.显然,
+
+<center>*X*和*Y*均为递增函数.</center>
+
+&emsp;&emsp;**转移概率**&emsp;假定一个恰在时间点 s 进入状态*X*的个体,在后来的时间点${t}\geq{s}$正好进入状态*Y*的概率是$P(t − s)$, 或等价地, 此个体在后来的时间点*t*仍然处于状态*X*的概率是$1 − P(t − s)$.进一步假设这个转移过程*X*→*Y*是齐性, 而且服从于一个累积分布函数 (cumulative distribution function,CDF) *P*:$\mathbb{R}_+{\to}[0, 1]$, 其满足
+
+<center>$P(0)=0$,$\displaystyle \lim_{t\to \infty}P(t)=1$,$\mu:=\int_{0}^{\infty}{(1-P(t))}{dt}<\infty$</center>
+
+其中$\mu=\int_{0}^{\infty}{(1-P(t))}{dt}$为$X\to Y$的平均转移时间,并将这个转移过程记作$X \displaystyle \to^{P}{Y}$.一般地,$\mu$叫作*P*的期望值.显然, 函数 *X*与*Y*可以通过转移概率建立联系, 下面导出二者的关系.
+
+&emsp;&emsp;**函数*X*与*Y*的关系**&emsp;对给定t > 0, 将区间[0, t]分成n+1个等距的子区间
+
+<center>$\lbrace {\Delta_i:}={[t_i,t_{i+1}]:{0 \leq i\leq n}}\rbrace$,$t_i:=i\Delta t$,$\Delta t=\frac{t}{n+1}$</center>
+
+考虑$\Delta_i=[t_i,t_{i+1}]$.显然有下面的等式:
+
+<center>$X(t_{i+1})-X(t_i)=在\Delta_i时段里进入X 态的个体总数$.</center>
+
+因此，
+
+<center>$(X(t_{i+1})-X(t_i))\times P(t-t_i) \approx上述处于 X 态的成员将在未来的时间点 t 进入 Y 态的个体数$.</center>
+
+另外，那些在起始点0就处于*X*态的成员(数量为$X(0)$), 在经历了*t*单位时间后将进入*Y*态的部分, 数量值是 $X(0)P(t)$. 故有
+
+<center>$Y(t)\approx X(0)P(t)+\displaystyle \sum_i(X(t_{i+1})-X(t_i))\times P(t-t_i)$</center>
+
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;$\approx X(0)P(t)+\displaystyle \sum_iX^{'}(t_i)\Delta t\times P(t-t_i)$
+
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;$=X(0)P(t)+\int_0^tX^{'}(s)P(t-s){ds}$,$当\Delta t\to 0时$.
+
+因此，
+
+<center>$Y(t)=X(0)P(t)+\int_0^tP(t-s)X^{'}(s){ds}$.</center>
+
+由分部积分可得，
+
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;$Y(t)=X(0)P(t)+P(t-s)X(s)|_0^t+\int_0^tP(t-s)X^{'}(s){ds}$
+
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;$=X(0)P(t)+P(0)X(t)-P(t)X(0)+\int_0^tP(t-s)X^{'}(s){ds}$
+
+注意到$P(0)=0$，上式可等价地写成
+
+<center>$Y(t)=\int_0^tP^{'}(t-s)X(s){ds}$.</center>
+
+### 2.4 一般时间相关的概率转移
+
+&emsp;&emsp;一般地, 若转移概率*P*是时间相关的, 则相应的卷积模型具有如下表达:
+
+<center>$Y(t)=X(0)P(0,t)+\int_0^tX^{'}(s)P(s,t-s){ds}$   $(t\geq 0)$</center>  
+
+## 3.SEIR模型
+　　考虑某种传染性疾病在人群中的传播, 在任何时刻, 每一个体都处于如下 4 种状态之一:  
+　　(1)易感态(susceptible, S), 即个体处于病源的传染范围内, 是高危人群;  
+　　(2)潜伏态(exposed, E), 即个体已被病源感染, 但还没有发病;  
+　　(3)传染态(infectious, I), 即个体已经发病, 具传染性, 症状可能因个体而异;  
+　　(4)移除态(recovered/removed, R; 或称为康净态),即个体或康复, 或因被隔离或死亡等原因而
+处于一种无传染性的净置状态.如果是康复, 康复者未必能获得对该病毒的完全免疫力, 所以, 这些个
+体可能再次处于病源的辐射范围内, 即 R → S.  
+令F(t)、G(t)、R(t)分别是在时间段[0,t]里已处于潜伏态、传染态和康净态的个体累积总数,则  
+<div align=center>  
+$$E(t):=F(t)-G(t),     I(t):=G(t)-R(t)\tag{3.1}$$
+</div>  
+是在时间点 t 时处于潜伏态和传染态的个体数, 其相应的初始条件是  
+<div align=center>  
+$$F(0) \geq 0,  G(0)=0, R(0)=0\tag{3.2}$$  
+</div>  
+　　根据我们先前的工作，可建立关于不同状态转移S → E →I → R 关系:   
+<div align=center>   
+$$F'(t)=r(t) \cdot (G(t)-R(t))   　　　 (S → E),\tag{3.3}$$ $$G(t)=\int^{t}_{0}{F(t-s)W'(s)ds}    　　　(E → I),\tag{3.4}$$
+$$R(t)=\int^{t}_{0}{G'(s)A(s,t-s)ds}　　(I → R),\tag{3.5}$$  
+</div>  
+这里用到了上一节所给的积分模型方程, 其中(3.4)和(3.5)刻画 E → I 和 I → R 这两个转移过
+程, 而方程 (3.3) 描述转移过程 S → E, 另外,  
+　　(1)r(t)是非负的有界函数, 它表示在 t 时刻, 单位时间里每个传染者所具有的平均传染率(mean
+infection rate per unit time per active infective), 称为即时平均传染率.一般地, r(t) 的值依赖于控制效率.  
+　　(2)W(t) 是一个潜伏患者在被感染 t 单位时间后成为传染者的概率.故W是非减函数, W(0) = 0,且当t → $\infty$ 时，W(t) → 1.  
+　　(3)A(t,s)是一个恰好在时刻 t 成为传染者的个体,在经过 s 单位时间后进入恢复态的概率.故对于任意固定的 t，A(t, s) 是 s 的非减函数,且当s → $\infty$ 时,A(t, s) → 1.一般地, A(t, s) 的值依赖于控制效率.  
+　　下面给出传染病动力学模型最基本量, 即有效再生数的计算式:  
+<div align=center>  
+$$R_{eff}(t):= \int^{\infty}_{0}{r(t+s)(1-A(t,s))ds}　　(t \geq 0),\tag{3.6}$$  
+</div>  
+它代表在疾病传播过程中, 在时间 t 的一个染病患者在其病程内平均传染的患者数, 它是一个随时间
+变化的量, 也是病毒传播是否能够维持的指标.  
+$$G(t)=F(0)W(t)+\int^{t}_{0}{F'(s)W(t-s)ds}$$
+$$G(t)=\int^{t}_{0}{W(t-s)d(F(s)}$$
+$$G(t)=-\int^{t}_{0}{F(s)W'(t-s)(-1)d(s)}$$ 
+令u=t-s,则  
+$$G(t)=\int^{0}_{t}{F(t-u)W'(u)d(t-u)}$$
+$$G(t)=\int^{t}_{0}{F(t-u)W'(u)d(u)}$$
+$$G(t)=\int^{t}_{0}{F(t-s)W'(s)ds} 　　(E → I)$$
+
+##  4.实施疾控下r和A的表达
+
+&#160; &#160; &#160; &#160;这部分的基本任务是将控制变量$(u_S,u_I)$镶入到$r$和$A$的构造里，简化变型，进行实施疾控下的$r$和$A$的表达。  
+
+&#160; &#160; &#160; &#160;对于建模，首先需要回顾如下4个基本的流行病学上的参数： 
+$$
+\begin{align}
+β&=内在的每单位时间每个活跃的传染者的平均传染率\\  
+τ&=平均潜伏期\\  
+σ&=平均传染期\\  
+θ&=非典型患者的占比.  
+\end{align}
+$$
+&#160; &#160; &#160; &#160;由此可知，基本再生数为$R_0=β*σ$，  
+$$
+\begin{align}
+τ=&\int_0^{\infty}(1-W(t)) d t\\  
+σ=&\int_0^{\infty}(1-A(0,t)) d t
+\end{align}
+$$
+&#160; &#160; &#160; &#160;关于控制变量$(u_S,u_I)$的意义，定义如下：
+$$
+\begin{align}
+1-u_S(t,R(t))&=\frac{受控的易感染者在t时的感染率}{无受控状态下的易感染者的感染率}\\  
+1-u_I(t,R(t))&=\frac{受控的传染者在t时的传染率}{无受控状态下的传染者的传染率} 
+\end{align}
+$$
+&#160; &#160; &#160; &#160;简要地，这两个控制变量的意义是 
+$$
+\begin{align}
+u_S(t,R(t)):减低感染率\\     
+u_I(t,R(t)):减低传染率
+\end{align}
+$$
+&#160; &#160; &#160; &#160;$u_S$和$u_I$在这里都写成了依赖于康净者$R(t)$的函数，是为了描述“基于报告的患者总数提升疾控力度”这种疾控响应模式。假定函数$u_S$和$u_I$均是$Lebesgue$可测的。$Lebesgue$可测的一个定义是内外逼近，即内测度等于外测度，内测度是指包含在$B$中的所有闭集之测度的上确界，外侧度是包含$B$的所有开集之测度的下确界。这里的$B$是开集，是指集合$B$中任意一点都能取到一个邻域包含于$B$中。 
+
+&#160; &#160; &#160; &#160;在以上框架下，我们相应地将$r$和$A$写成$u=(u_S,u_I)$的泛函，有  
+$$
+\begin{align}
+r(u_S)(t)&=β(1-u_S(t,R(t)))\\   
+A(u_I)(t,s)&=θA_a(u_I)(t,s)+(1-θ)A_b(u_I)(t,s)   
+\end{align}
+$$
+其中，
+$$
+\begin{align}
+A_a(u_I)(t,s)&=1-(1-ϱu_I(t,R(t)))(1-A^a(s))\\ 
+A_b(u_I)(t,s)&=1-(1-u_I(t,R(t)))(1-A^b(s))  
+\end{align}
+$$
+这里的常数$ϱ \in (0,1)$，反映了控制效率在“非典型传染者” 上的减弱。
+$A^a$是子群“非典型传染者”的内在的康净概率函数，$A^b$是“典型传染者”的内在的康净概率函数，
+$$
+\begin{align}
+σ_a&=\int_0^{\infty}(1-A^a(t)) d t\\
+σ_b&=\int_0^{\infty}(1-A^b(t)) d t
+\end{align}
+$$
+一般地，$σ_a\geqσ_b$，$θσ_a+(1-θ)σ_b=σ$，且有
+$$
+\begin{align}
+A_1(u_I)(t,s)=1-A(u_I)(t,s)=Y(s)-u_I(t,R(t))Z(s)
+\end{align}
+$$
+其中，
+$$
+\begin{align}
+Y(s)&=θ(1-A^a(s))+(1-θ)(1-A^b(s))\\
+Z(s)&=ϱθ(1-A^a(s))+(1-θ)(1-A^b(s))
+\end{align}
+$$
+函数$Y$和$Z$均是非增的，$Z\leq Y$且有
+$$
+\begin{align}
+\int_0^{\infty}Y(t)d t&=σ\\
+\int_0^{\infty}Z(t)d t&=σ-(1-ϱ)θσ_a\\
+\displaystyle\lim_{s\rightarrow\infty}Y(s)&=0=\displaystyle\lim_{s\rightarrow\infty}Z(s)
+\end{align}
+$$
+
+## 5.程序EpiSIX的架构及数值拟合方法
+&#160; &#160; &#160; &#160;为了实现数值化， 我们将模型转化成积分模型： 
+$$
+\begin{align}
+F(t)&=F(0)+\int_0^{t}r(u_S)(s)\cdot(G(s)-R(s)) d s,(S \rightarrow E)\\  
+G(t)&=\int_0^{t}F(t-s)W'(s) d s,(E\rightarrow I)\\  
+R(t)&=\int_0^{t}G'(s)A(u_I)(s,t-s) d s,(I\rightarrow R)
+\end{align}
+$$
+
+### 5.1 控制效率函数$u_S$和$u_I$的构造
+
+&#160; &#160; &#160; &#160;这里只涉及“基于报道的患者总数提升疾控力度”这种疾控响应模式。对于一般形式下控制效率函数的构造，在控制没有受到干扰的情况下，取  
+$$
+\begin{align}
+u(t)=min\lbrace q,1-exp(-(\frac{R(t)}{m})^p)\rbrace,(t\geq0)  
+\end{align}
+$$
+其中$q\in [0,1]$，$p$和$m$均为常数，$q$可以用来测量疾控方可能到达的最高疾控力度。$R(t)$ 是从疫情开始$t = 0$ 至某个时间点$t $恢复者的总数， 它与报道的患者总数构成一种同增关系。这里$u(t)$相当于“类$Weibull$分布”。  
+
+&#160; &#160; &#160; &#160;这里可以看一下$Weibull$分布，
+$$f(x;\lambda,k)=\begin{cases}
+\frac{k}{\lambda}(\frac{x}{\lambda})^ {(k-1)} exp(-(\frac{x}{\lambda})^k)  , & x \geq 0\\
+0, & x<0
+\end{cases}$$
+其中，$x$是随机变量，$\lambda>0$是比例参数，$k>0$是形状参数。当$k=1$时是指数分布。  
+
+&#160; &#160; &#160; &#160;在出现控制受到干扰的情况下， 假设在某个时间点$t_1>0$之后，有两个时间子集$\Delta_1$和$\Delta_2$，$\Delta_1\cup\Delta_2=[t_1,\infty)$，使得当$t \in \Delta_1$时， 无扰下的控制效率$u(t)$有一个减弱，度为$1-a \in [0, 1]$；而在当$t \in \Delta_2$时， 无扰下的控制效率$u(t)$ 可能也有一个减弱，度为$1-b \in [0, 1]$。 最后，令  
+
+$$\widetilde{u}(t)=\begin{cases}
+u(t), & t < t_1\\
+a\times u(t), & t \in \Delta_1\\
+b\times u(t), & t \in \Delta_2
+\end{cases}$$
+
+&#160; &#160; &#160; &#160;通过适当选取子集$\Delta_1$和$\Delta_2$以及参数$a, b\in [0, 1]$来模拟2020年2月10日复工潮可能带来的对疫情的影响。
+
+
+### 5.2函数r和A的构造
+
+r：施加控制后每单位时间内每个活跃传染者的平均传染率
+A：$I\rightarrow R$，患者经过时间t之后进入恢复期的概率
+
+&#160; &#160; &#160; &#160;研究选取$u_s=\widetilde{u}$,其中$\widetilde{u}$由前面给出，即
+
+$$
+r(u_s)(t)=\beta\times(1-\widetilde{u}(t))
+$$
+&#160; &#160; &#160; &#160;假定$I\rightarrow R$是一个“快过程”，所以研究选取指数分布作为$A^a$和$A^b$的表达（下标a和b分别表示非典型患者和典型患者），即
+
+$$
+A^a(t)=1-e^{-t/\delta_a} ; A^a(t)=1-e^{-t/\delta_b}    (t\geq0)
+$$
+&#160; &#160; &#160; &#160;此外研究假设$\delta_a=2\delta_b$以及$\rho=\frac{3+\theta}{4+\theta}\in[2/3,3/4]$.故
+
+$$
+\delta_a=\frac{2\delta}{1+\theta}, \delta_b=\frac{\delta}{1+\theta}, \rho=\frac{3+\theta}{4+\theta}
+$$
+&#160; &#160; &#160; &#160;关于过程$E\rightarrow I$的转移函数$W$的选择，$W$有两种基本模式：
+
+（1）指数分布CDF（快过程）
+
+$$
+W'_E(t)=(\frac{1}{\tau})exp(-\frac{1}{\tau})(t\geq 0)
+$$
+（1)Log正态（Log normal,LN）分布CDF（慢过程）
+$$
+W'_LN(t)=\frac{exp(-(lnt-\mu)^2/(2\nu^2))}{t\nu\sqrt{2\pi}}(t\geq0)
+$$
+其中
+$$
+\nu:=\sqrt{\frac{|ln(\tau)|}{\tau}}, \mu:=ln\tau -\frac{\nu^2}{2}
+$$
+
+&#160; &#160; &#160; &#160;两数$\nu$和$\mu$按如下规则选取，当$\tau\rightarrow \infty$时，有中位数$e^\mu\varpropto \tau$和偏移率$(e^{\nu^2}+2)\sqrt{e^{\nu^2}-1}\rightarrow 0$,选取
+
+$$
+W'(t)=\lambda W'_E(t)+(1-\lambda)W'_LN(t)(t>0)
+$$
+其中参数$\lambda\in[0,1]$可以用来描述转移过程$E\rightarrow I$的快慢程度。
+最后选取$u_I=\widetilde{u}$, 
+
+
+
+
+### 5.3确诊灰度和参数估计
+
+&#160; &#160; &#160; &#160;设有数据集{$d_j:j=1,...,K$},其中每个$d_j$均为在某个时间点实际报道的患者总数，由于诸多因素的影响，实际报道的患者总数和模型给出的患者总数$R(t)$之间存在差异，文章中用“确诊灰度”来表示这个差异。
+$$
+gdd(t)\equiv\frac{GDD(t)}{100}:=1-\frac{d(t)}{R(t)}
+$$
+其中$d(t)$是在时间t时实际报道的患者数，假定灰度与疾控力度成反比，与非典型患者的占比$\theta$以及描述转移过程的慢程度参数$1-\lambda$成正比,则可取
+$$
+GDD(t)=100\times max\lbrace0,1-\theta^{\lambda-1}u_I(t)\rbrace (t\geq0)
+$$
+
+&#160; &#160; &#160; &#160;2020年2月12日，由于疾控方将“临床确诊”首次计入确诊病例，所以产生了一个巨大的单日增量，月1.3万个临床确诊病例，文章采用了“先割后补”的方法来处理，即只取临床确诊病例的一小部分算作通过核算检测确诊的病例（0.1万），在以后的数据中都去掉1.2万，最后算出理论值后再将这1.2万个病例加上去。
+
+&#160; &#160; &#160; &#160;文章采用均方根误差来测量实际数据和理论值之间的差异，假设“零号患者”出现的时间点$t=0$距离第一批被报道的患者的时间点$t_0$个时间单位，则有
+$$
+RMSE(\Pi):=\sqrt{\frac{1}{K}\sum_{k=1}^{K}[d_k-(1-gdd(t_0+k-1))R(t_0+k-1)]^2}
+$$
+$d_k$表示测量值，也就是真实报道的患者数，$(1-gdd(t))R(t)$称为理论的报道总数。
+
+其中参数集$\Pi$包含以下10个参数：
+$$
+\Pi:=(\tau,\delta,\beta,\theta,\lambda,t_0,m,p,q,F_0)
+$$
+其中
+$\tau$:平均潜伏期
+
+$\delta$:平均传染期
+
+$\beta$:内在的每时间单位每个活跃的传染者的平均传染率
+
+$\theta$:非典型患者的占比
+
+$\lambda$:描述$E\rightarrow I$的快慢程度
+
+$t_0$:“零号患者”出现到第一批报道患者的时间
+
+$m$:常数
+
+$p$:常数
+
+$q$:疾控方可能到达的最高疾控力度，$q\in[0,1]$
+
+$F_0$:0时刻处于潜伏态的个体累计数
