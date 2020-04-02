@@ -1,0 +1,94 @@
+---
+title: "新型冠状病毒肺炎疫情控制策略研究：效率评估及建议"
+author: Zhiwei Li
+documentclass: ctexart
+output:
+  rticles::ctex:
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
+classoption: "hyperref,"
+---
+
+# 函数r和A的构造
+
+r：施加控制后每单位时间内每个活跃传染者的平均传染率
+A：$I\rightarrow R$，患者经过时间t之后进入恢复期的概率
+
+研究选取$u_s=\widetilde{u}$,其中$\widetilde{u}$由（6.4）和（6.5）给出，即
+
+$$
+r(u_s)(t)=\beta\times(1-\widetilde{u}(t))\tag{6.6}
+$$
+假定$I\rightarrow R$是一个“快过程”，所以研究选取指数分布作为$A^a$和$A^b$的表达（下标a和b分别表示非典型患者和典型患者），即
+
+$$
+A^a(t)=1-e^{-t/\delta_a} ; A^a(t)=1-e^{-t/\delta_b} (t\geq0)\tag{6.7}
+$$
+此外研究假设$\delta_a=2\delta_b$以及$\rho=\frac{3+\theta}{4+\theta}\in[2/3,3/4]$.故
+
+$$
+\delta_a=\frac{2\delta}{1+\theta}, \delta_b=\frac{\delta}{1+\theta}, \rho=\frac{3+\theta}{4+\theta}\tag{6.8}
+$$
+关于过程$E\rightarrow I$的转移函数$W$的选择，$W$有两种基本模式：
+（1）指数分布CDF（快过程）
+
+$$
+W'_E(t)=(\frac{1}{\tau})exp(-\frac{1}{\tau})(t\geq 0)\tag{6.9}
+$$
+（1)Log正态（Log normal,LN）分布CDF（慢过程）
+$$
+W'_LN(t)=\frac{exp(-(lnt-\mu)^2/(2\nu^2))}{t\nu\sqrt{2\pi}}(t\geq0)\tag{6.10}
+$$
+其中
+$$
+\nu:=\sqrt{\frac{|ln(\tau)|}{\tau}}, \mu:=ln\tau -\frac{\nu^2}{2}\tag{6.11}
+$$
+两数$\nu$和$\mu$按如下规则选取，当$\tau\rightarrow \infty$时，有中位数$e^\mu\varpropto \tau$和偏移率$(e^{\nu^2}+2)\sqrt{e^{\nu^2}-1}\rightarrow 0$,选取
+$$
+W'(t)=\lambda W'_E(t)+(1-\lambda)W'_LN(t)(t>0)\tag{6.12}
+$$
+其中参数$\lambda\in[0,1]$可以用来描述转移过程$E\rightarrow I$的快慢程度。
+最后选取$u_I=\widetilde{u}$, 它仅依赖于$R(t)$且由（6.4）和（6.5）给出.如此则通过（5.25）-（5.29）定义了。
+
+
+
+
+# 确诊灰度和参数估计
+
+设有数据集{$d_j:j=1,...,K$},其中每个$d_j$均为在某个时间点实际报道的患者总数，由于诸多因素的影响，实际报道的患者总数和模型给出的患者总数$R(t)$之间存在差异，文章中用“确诊灰度”来表示这个差异。
+$$gdd(t)\equiv\frac{GDD(t)}{100}:=1-\frac{d(t)}{R(t)}\tag{6.13}$$
+其中$d(t)$是在时间t时实际报道的患者数，假定灰度与疾控力度成反比，与非典型患者的占比$\theta$以及描述转移过程的慢程度参数$1-\lambda$成正比,则可取
+$$
+GDD(t)=100\times max\lbrace0,1-\theta^{\lambda-1}u_I(t)\rbrace (t\geq0)\tag{6.14}
+$$
+
+2020年2月12日，由于疾控方将“临床确诊”首次计入确诊病例，所以产生了一个巨大的单日增量，月1.3万个临床确诊病例，文章采用了“先割后补”的方法来处理，即只取临床确诊病例的一小部分算作通过核算检测确诊的病例（0.1万），在以后的数据中都去掉1.2万，最后算出理论值后再将这1.2万个病例加上去。
+
+文章采用均方根误差来测量实际数据和理论值之间的差异，假设“零号患者”出现的时间点$t=0$距离第一批被报道的患者的时间点$t_0$个时间单位，则有
+$$
+RMSE(\Pi):=\sqrt{\frac{1}{K}\sum_{k=1}^{K}[d_k-(1-gdd(t_0+k-1))R(t_0+k-1)]^2}\tag{6.15}
+$$
+$d_k$表示测量值，也就是真实报道的患者数，$(1-gdd(t))R(t)$称为理论的报道总数。
+
+其中参数集$\Pi$包含以下10个参数：
+$$
+\Pi:=(\tau,\delta,\beta,\theta,\lambda,t_0,m,p,q,F_0)\tag{6.16}
+$$
+其中
+$\tau$:平均潜伏期
+$\delta$:平均传染期
+$\beta$:内在的每时间单位每个活跃的传染者的平均传染率
+$\theta$:非典型患者的占比
+$\lambda$:描述$E\rightarrow I$的快慢程度
+$t_0$:“零号患者”出现到第一批报道患者的时间
+$m$:常数
+$p$:常数
+$q$:疾控方可能到达的最高疾控力度，$q\in[0,1]$
+$F_0$:0时刻处于潜伏态的个体累计数
+
+下图是模型的拟合和预测结果：
+```{r}
+knitr::include_graphics("plot/predict.png")
+```
+从结果看，模型的拟合和预测效果是不错的，在2月12日和2月13日有一个大的偏差，这是受2月12日武汉市临床病例纳入的影响，若这两天的实际数据减去1.3万，仍在预测区间里，后面为应对这种数据的突变，则采用了“先割后补”的方法。
