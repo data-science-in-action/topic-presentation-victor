@@ -11,7 +11,7 @@ output:
 ### 1.1 受控状态及拐点
 &emsp;&emsp;1.基本再生数（Basic Reproduction Number, $R_0$）：没有干预的情况下，在一个是全部是易感人的环境中，平均一个患者能够传染的人数。  
 &emsp;&emsp;2.有效再生数（Effective Reproduction Number, $Reff$）：$t$ 时刻开始出现症状的一个患者平均能够传染的人数，一般以天为单位。（2020年2月5日， $Reff=0.91<1$）  
-&emsp;&emsp;3.确诊灰度（grey degree of diagnosis, $GDD$）：实际报道的患 者总数与本文模型给出的须报道的患者总数 $R(t)$ 的比值。（2020年2月5日，$GDD=0.0$）  
+&emsp;&emsp;3.确诊灰度（grey degree of diagnosis, $GDD$）：实际报道的患 者总数与本文模型给出的须报道的患者总数 $R(t)$ 的比值。（2020年2月5日，$GDD=0.0$%）  
 &emsp;&emsp;4.拐点：病例曲线继续上升，病例增长速度降低。（2020年2月7日理论拐点出现）
 
 ### 1.2 流行时间跨度、最终规模及复工风险评估
